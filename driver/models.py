@@ -11,7 +11,9 @@ class Advice(models.Model):
     article = models.TextField()
     created_date = models.DateField(editable=False)
     tags = models.ManyToManyField('Tag')
-    media = models.FileField(upload_to='advice/miedia/')
+    media = models.FileField(upload_to='advice/')
+    weeks_advice = models.BooleanField(default=False)
+    passed = models.ManyToManyField(User)
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -20,7 +22,10 @@ class Advice(models.Model):
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=64, unique=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Like(models.Model):
@@ -52,6 +57,9 @@ class TestQuestion(models.Model):
     advice = models.ForeignKey(Advice, on_delete=models.CASCADE)
     question = models.CharField(max_length=512)
 
+    def __str__(self):
+        return self.question
+
 
 class TestAnswer(models.Model):
     question = models.ForeignKey(TestQuestion, on_delete=models.CASCADE)
@@ -60,7 +68,10 @@ class TestAnswer(models.Model):
 
 
 class ForumTopic(models.Model):
-    name = models.CharField(max_length=512)
+    name = models.CharField(max_length=512, unique=True)
+
+    def __str__(self):
+        return self.name
 
 
 class ForumThread(models.Model):
