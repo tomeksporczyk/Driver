@@ -3,6 +3,7 @@ from django.db import models
 
 # Create your models here.
 from django.utils import timezone
+from django.utils.text import slugify
 
 
 class Advice(models.Model):
@@ -14,10 +15,25 @@ class Advice(models.Model):
     media = models.FileField(upload_to='advice/')
     weeks_advice = models.BooleanField(default=False)
     passed = models.ManyToManyField(User, blank=True)
+    slug = models.SlugField(unique=True, editable=False)
+
+    def __str__(self):
+        return self.title
+
+    def _get_unique_slug(self):
+        slug = slugify(self.title)
+        unique_slug = slug
+        number = 1
+        while Advice.objects.filter(slug=unique_slug).exists():
+            unique_slug = f'{unique_slug}-{number}'
+            number += 1
+        return unique_slug
 
     def save(self, *args, **kwargs):
         if not self.id:
             self.created_date = timezone.now()
+        if not self.slug:
+            self.slug = self._get_unique_slug()
         return super().save(*args, **kwargs)
 
 
@@ -88,3 +104,8 @@ class ForumAnswer(models.Model):
     text = models.TextField()
     created_date_time = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+
+
+class Score(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    score = models.IntegerField()

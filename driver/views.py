@@ -27,6 +27,10 @@ class Home(View):
         return render(request, 'driver/home.html', context)
 
 
+class ArticleView(View):
+    pass
+
+
 class LoginView(View):
     def get(self, request):
         return render(request, 'driver/login.html', context={'form': LoginForm().as_p(),
