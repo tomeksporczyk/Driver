@@ -1,0 +1,11 @@
+{% autoescape off %}
+Cześć {{ user.first_name }},
+zespół Drivera wita Cię w społeczności! Ucz się pilnie. Czytaj codziennie publikowane artykuły. Rozwiązuj testy!
+Twoje dane na portalu:
+login: {{ user.username }}
+imię: {{ user.first_name }}
+nazwisko: {{ user.last_name }}
+
+Pozdrawiamy, owocnej nauki!
+Zespół Driver
+{% endautoescape %}

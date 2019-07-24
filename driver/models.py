@@ -13,7 +13,7 @@ class Advice(models.Model):
     tags = models.ManyToManyField('Tag')
     media = models.FileField(upload_to='advice/')
     weeks_advice = models.BooleanField(default=False)
-    passed = models.ManyToManyField(User)
+    passed = models.ManyToManyField(User, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.id:
