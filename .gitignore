@@ -106,4 +106,4 @@ venv.bak/
 db_settings.py
 .idea
 
-.advice
+media/
