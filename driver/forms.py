@@ -11,7 +11,7 @@ class LoginForm(forms.Form):
 class RegistrationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name')
+        fields = ('username', 'first_name', 'last_name', 'email')
 
 
 class EditUserForm(UserChangeForm):

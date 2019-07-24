@@ -7,7 +7,7 @@
 <body>
     <h2>Driver</h2>
     <div>
-        {% if not user %}
+        {% if user.is_anonymous %}
             <a href="{% url 'login' %}">Zaloguj się</a>
             <a href="{% url 'register' %}">Załóż konto</a>
         {% else %}

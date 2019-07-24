@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login, logout, update_session_auth
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import AnonymousUser
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -18,7 +19,10 @@ class Home(View):
         weeks_advice = Advice.objects.filter(weeks_advice=True).latest(field_name="created_date")
         if not weeks_advice:
             weeks_advice = Advice.objects.latest(field_name="created_date")
-        advices_not_passed = Advice.objects.exclude(passed=request.user).exclude(weeks_advice)
+        if request.user.is_anonymous:
+            advices_not_passed = Advice.objects.exclude(pk=weeks_advice.pk)
+        else:
+            advices_not_passed = Advice.objects.exclude(passed=request.user).exclude(pk=weeks_advice.pk)
         context = {'weeks_advice': weeks_advice, 'advices_not_passed': advices_not_passed}
         return render(request, 'driver/home.html', context)
 
