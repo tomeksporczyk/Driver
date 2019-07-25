@@ -3,6 +3,8 @@
     <h2>Porada tygodnia</h2>
     <div>
         <h5><a href="/advice/{{ weeks_advice.slug }}">{{ weeks_advice.title }}</a></h5>
+        {% if 'video' in  magic.from_file(%}
+        {% endif %}
         <p>
             {{ weeks_advice.lead }}
         </p>

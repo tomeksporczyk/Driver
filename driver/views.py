@@ -1,3 +1,4 @@
+import magic
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
@@ -23,6 +24,7 @@ class Home(View):
             advices_not_passed = Advice.objects.exclude(pk=weeks_advice.pk)
         else:
             advices_not_passed = Advice.objects.exclude(passed=request.user).exclude(pk=weeks_advice.pk)
+        media_type = magic.from_file()
         context = {'weeks_advice': weeks_advice, 'advices_not_passed': advices_not_passed}
         return render(request, 'driver/home.html', context)
 

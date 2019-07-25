@@ -1,3 +1,4 @@
+import magic
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -13,12 +14,16 @@ class Advice(models.Model):
     created_date = models.DateField(editable=False)
     tags = models.ManyToManyField('Tag')
     media = models.FileField(upload_to='advice/')
+    media_type = models.CharField(max_length=50, editable=False)
     weeks_advice = models.BooleanField(default=False)
     passed = models.ManyToManyField(User, blank=True)
     slug = models.SlugField(unique=True, editable=False)
 
     def __str__(self):
         return self.title
+
+    def _get_media_type(self):
+        return magic.from_buffer(self.media.read(), mime=True)
 
     def _get_unique_slug(self):
         slug = slugify(self.title)
@@ -32,8 +37,10 @@ class Advice(models.Model):
     def save(self, *args, **kwargs):
         if not self.id:
             self.created_date = timezone.now()
+            self.media_type = self._get_media_type()
         if not self.slug:
             self.slug = self._get_unique_slug()
+
         return super().save(*args, **kwargs)
 
 
