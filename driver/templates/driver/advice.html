@@ -1,0 +1,31 @@
+{% extends 'driver/base.html' %}
+{% block content %}
+    <div>
+        <h3 class="title">{{ advice.title }}</h3>
+        <div class="media">
+            {% if 'video' in advice.media_type %}
+                <video width="448" height="252" controls>
+                    <source src="{{ advice.media.url }}" type="{{ advice.media_type }}">
+                </video>
+            {% elif "image" in  advice.media_type %}
+                <img src="{{ advice.media.url }}" alt="{{ advice.title }}" width="448" height="252">
+            {% endif %}
+        </div>
+        <div>
+            <p>
+                {{ advice.article }}
+            </p>
+            <p>
+                Data publikacji: {{ advice.created_date }}
+            </p>
+            <p class="tags">
+                {% for tag in advice.tags.all %}
+                    {{ tag }}
+                {% endfor %}
+            </p>
+            <p class="likes">
+                likes: {{ advice.likes }}
+            </p>
+        </div>
+    </div>
+{% endblock %}

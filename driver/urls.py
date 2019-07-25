@@ -2,11 +2,11 @@ from django.conf.urls import url
 from django.urls import path, reverse_lazy
 from django.contrib.auth import views as auth_views
 from driver.views import Home, LoginView, user_profile, EditProfileView, ChangePasswordView, RegisterView, \
-    logout_view, ArticleView
+    logout_view, AdviceView
 
 urlpatterns = [
     path('', Home.as_view(), name='home'),
-    path('advice/<slug:slug>', ArticleView.as_view(), name='article'),
+    path('advice/<slug:slug>', AdviceView.as_view(), name='article'),
     path('login', LoginView.as_view(), name="login"),
     path('logout', logout_view, name='logout'),
     path('register', RegisterView.as_view(), name='register'),
