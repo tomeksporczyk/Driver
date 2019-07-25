@@ -18,6 +18,7 @@ class Advice(models.Model):
     weeks_advice = models.BooleanField(default=False)
     passed = models.ManyToManyField(User, blank=True)
     slug = models.SlugField(unique=True, editable=False)
+    likes = models.IntegerField(default=0, editable=False)
 
     def __str__(self):
         return self.title

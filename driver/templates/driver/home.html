@@ -1,13 +1,80 @@
 {% extends 'driver/base.html' %}
 {% block content %}
-    <h2>Porada tygodnia</h2>
     <div>
-        <h5><a href="/advice/{{ weeks_advice.slug }}">{{ weeks_advice.title }}</a></h5>
-        {% if 'video' in  magic.from_file(%}
+        {% if messages %}
+            <ul>
+            {%for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
         {% endif %}
-        <p>
-            {{ weeks_advice.lead }}
-        </p>
     </div>
-
+    <div>
+        <div class="weeks-advice">
+            <h2>Porada tygodnia</h2>
+            <h3 class="title"><a href="/advice/{{ weeks_advice.slug }}">{{ weeks_advice.title }}</a></h3>
+            <div class="media">
+            {% if 'video' in  weeks_advice.media_type %}
+                <video width="448" height="252" controls>
+                <source src="{{ weeks_advice.media.url }}" type="{{ weeks_advice.media_type }}">
+                </video>
+                {% elif 'image' in weeks_advice.media_type %}
+                <img src="{{ weeks_advice.media.url }}" alt="{{ weeks_advice.title }}" width="448" height="252">
+            {% endif %}
+            </div>
+            <p class="lead">
+                {{ weeks_advice.lead }} <a href="/advice/{{ weeks_advice.slug }}"> Czytaj wiecej...</a>
+            </p>
+            <p class="tags">
+                {% for tag in weeks_advice.tags.all %}
+                    <a href="#">{{ tag }}</a>
+                {% endfor %}
+            </p>
+            <p class="likes">
+                like: {{ weeks_advice.likes }}
+            </p>
+        </div>
+        {% if user.is_authenticated %}
+        <div>
+            <h4>Napisz wiadomość do administracji</h4>
+            <form method="post">
+                {% csrf_token %}
+                <textarea name="message" cols="50" rows="8"></textarea>
+                <input type="submit" value="Wyślij wiadomość">
+            </form>
+        </div>
+        {% endif %}
+        <div class="advices pagination">
+            <h2>Porady do zaliczenia</h2>
+            {% for advice in advices_not_passed %}
+                <h3 class="title"><a href="/advice/{{ advice.slug }}">{{ advice.title }}</a></h3>
+                <div class="media">
+                    {% if "video" in advice.media_type %}
+                        <video width="448" height="252" controls>
+                            <source src="{{ advice.media.url }}" type="{{ advice.media_type }}">
+                        </video>
+                    {% elif "image" in advice.media_type %}
+                        <img src="{{ advice.media.url }}" alt="{{ advice.title }}" width="448" height="252">
+                    {% endif %}
+                </div>
+                <p class="lead">
+                    {{ advice.lead }} <a href="#">Czytaj dalej...</a>
+                </p>
+                <p class="tags">
+                    {% for tag in advice.tags.all %}
+                        <a href="#">{{ tag }}</a>
+                    {% endfor %}
+                </p>
+                <p class="likes">
+                    like: {{ advice.likes }}
+                </p>
+            {% endfor %}
+            {% if advices_not_passed.has_previous %}
+                <a href="?page={{ advices_not_passed.previous_page_number }}">Poprzednia strona</a>
+            {% endif %}
+            {% if advices_not_passed.has_next %}
+                <a href="?page={{ advices_not_passed.next_page_number }}">Następna strona</a>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

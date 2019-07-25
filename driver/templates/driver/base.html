@@ -12,6 +12,7 @@
             <a href="{% url 'register' %}">Załóż konto</a>
         {% else %}
             <p>Cześć {{ user.first_name }}!</p>
+            <p>Twoja punkacja: {{ user.score.score }}</p>
             <a href="{% url 'logout' %}">Wyloguj się</a>
         {% endif %}
     </div>
