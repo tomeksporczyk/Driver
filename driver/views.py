@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import AnonymousUser, User
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -50,16 +50,18 @@ class Home(View):
 
 
 class AdviceView(View):
-    """todo: likes system, quiz."""
+    """todo: likes system, quiz (not with radio select!)."""
     def get(self, request, slug):
-        print(slug)
         try:
             advice = Advice.objects.get(slug=slug)
-            print(advice)
         except Advice.DoesNotExist:
             return Http404
         return render(request, 'driver/advice.html', context={'advice': advice})
-
+    
+    def post(self, request, slug):
+        ans = request.POST.getlist('answer')
+        print(ans)
+        return HttpResponse('k')
 
 
 class LoginView(View):

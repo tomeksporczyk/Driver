@@ -27,5 +27,19 @@
                 likes: {{ advice.likes }}
             </p>
         </div>
+        <div class="quiz">
+            <form method="post">
+            {% csrf_token %}
+            {% for question in advice.testquestion_set.all %}
+                <h4>{{ question.question }}</h4>
+                <ul>
+                {% for answer in question.testanswer_set.all %}
+                    <li><input type="radio" name="answer" value="{{ question.id }}-{{ answer.id }}">{{ answer.answer }}</li>
+                {% endfor %}
+                </ul>
+            {% endfor %}
+                <input type="submit" value="Wyślij">
+            </form>
+        </div>
     </div>
 {% endblock %}
