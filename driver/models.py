@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.text import slugify
 
@@ -89,6 +91,12 @@ class TestAnswer(models.Model):
     question = models.ForeignKey(TestQuestion, on_delete=models.CASCADE)
     answer = models.CharField(max_length=512)
     is_truth = models.BooleanField(default=False)
+    points = models.IntegerField(default=0)
+
+    def save(self, *args, **kwargs):
+        if self.is_truth is True and self.points < 1:
+            self.points = 1
+        return super().save(*args, **kwargs)
 
 
 class ForumTopic(models.Model):
@@ -116,4 +124,15 @@ class ForumAnswer(models.Model):
 
 class Score(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    score = models.IntegerField()
+    score = models.IntegerField(default=0)
+
+
+@receiver(post_save, sender=User)
+def create_user_score(sender, instance, created, **kwargs):
+    if created:
+        Score.objects.create(user=instance)
+
+
+@receiver(post_save, sender=User)
+def save_user_score(sender, instance, **kwargs):
+    instance.score.save()

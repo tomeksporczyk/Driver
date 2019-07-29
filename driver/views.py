@@ -17,7 +17,7 @@ from django.urls import reverse_lazy
 from django.views import View
 
 from driver.forms import LoginForm, RegistrationForm, EditUserForm
-from driver.models import Advice
+from driver.models import Advice, TestAnswer
 from driver.utils import create_email_message
 
 
@@ -50,7 +50,7 @@ class Home(View):
 
 
 class AdviceView(View):
-    """todo: likes system, quiz (not with radio select!)."""
+    """todo: likes system."""
     def get(self, request, slug):
         try:
             advice = Advice.objects.get(slug=slug)
@@ -59,7 +59,35 @@ class AdviceView(View):
         return render(request, 'driver/advice.html', context={'advice': advice})
     
     def post(self, request, slug):
-        ans = request.POST.getlist('answer')
+        ans = []
+        questions = Advice.objects.get(slug=slug).testquestion_set.all()
+        for question in questions:
+            try:
+                answer = int(request.POST.get(f'question-{question.id}'))
+            except (ValueError, TypeError):
+                continue
+            ans.append(answer)
+        print('ans', ans)
+        player_points = 0
+        max_points = sum([question.testanswer_set.get(is_truth=True).points for question in questions])
+        for answer_id in ans:
+            try:
+                answer = TestAnswer.objects.get(pk=int(answer_id))
+            except TestAnswer.DoesNotExist:
+                continue
+            if answer.is_truth is True:
+                player_points += answer.points
+
+        user = request.user
+        user.score.score += player_points
+        user.save()
+        # Advice.objects.get(slug=slug).passed = request.user
+
+
+
+        print('pl', player_points, 'max', max_points)
+
+
         print(ans)
         return HttpResponse('k')
 

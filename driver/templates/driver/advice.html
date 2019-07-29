@@ -28,13 +28,13 @@
             </p>
         </div>
         <div class="quiz">
-            <form method="post">
+            <form method="post" name="quiz" id="quiz">
             {% csrf_token %}
             {% for question in advice.testquestion_set.all %}
                 <h4>{{ question.question }}</h4>
                 <ul>
                 {% for answer in question.testanswer_set.all %}
-                    <li><input type="radio" name="answer" value="{{ question.id }}-{{ answer.id }}">{{ answer.answer }}</li>
+                    <li><input type="radio" name="question-{{ question.id }}" value="{{ answer.id }}">{{ answer.answer }} {{ answer.is_truth }}</li>
                 {% endfor %}
                 </ul>
             {% endfor %}
