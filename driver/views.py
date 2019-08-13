@@ -29,7 +29,7 @@ class Home(View):
         if request.user.is_anonymous:
             advices_not_passed_list = Advice.objects.exclude(pk=weeks_advice.pk)
         else:
-            advices_not_passed_list = Advice.objects.exclude(passed=request.user).exclude(pk=weeks_advice.pk)
+            advices_not_passed_list = Advice.objects.exclude(pk=weeks_advice.pk).order_by('-passed')
         paginator = Paginator(advices_not_passed_list, 3)
         page = request.GET.get('page')
         advices_not_passed = paginator.get_page(page)
