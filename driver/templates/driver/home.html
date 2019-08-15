@@ -58,7 +58,7 @@
                     {% endif %}
                 </div>
                 <p class="lead">
-                    {{ advice.lead }} <a href="#">Czytaj dalej...</a>
+                    {{ advice.lead }} <a href="/advice/{{ advice.slug }}">Czytaj dalej...</a>
                 </p>
                 <p class="tags">
                     {% for tag in advice.tags.all %}

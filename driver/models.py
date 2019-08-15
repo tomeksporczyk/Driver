@@ -58,7 +58,7 @@ class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     advice = models.ForeignKey(Advice, on_delete=models.CASCADE)
     like = models.BooleanField(default=False)
-    dislike = models.BooleanField(default=False)
+    dislike = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
         if self.like:
@@ -66,17 +66,6 @@ class Like(models.Model):
         else:
             self.dislike = True
         return super().save(*args, **kwargs)
-
-    def update(self, *args, **kwargs):
-        if self.like:
-            self.dislike = False
-        else:
-            self.dislike = True
-        if self.dislike:
-            self.like = False
-        else:
-            self.like = True
-        return super().update(*args, **kwargs)
 
 
 class TestQuestion(models.Model):

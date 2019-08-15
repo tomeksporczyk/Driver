@@ -17,8 +17,8 @@ from django.urls import reverse_lazy
 from django.views import View
 
 from driver.forms import LoginForm, RegistrationForm, EditUserForm
-from driver.models import Advice, TestAnswer
-from driver.utils import create_email_message
+from driver.models import Advice, TestAnswer, Like
+from driver.utils import create_email_message, check_quiz_answers, like_mechanism
 
 
 class Home(View):
@@ -55,31 +55,23 @@ class AdviceView(View):
         try:
             advice = Advice.objects.get(slug=slug)
         except Advice.DoesNotExist:
-            return Http404
-        return render(request, 'driver/advice.html', context={'advice': advice})
+            raise Http404
+        if request.user.is_anonymous:
+            return render(request, 'driver/advice.html', context={'advice': advice})
+        else:
+            if Like.objects.filter(user=request.user, advice=advice).count():
+                like = Like.objects.get(user=request.user, advice=advice)
+            else:
+                like = None
+            return render(request, 'driver/advice.html', context={'advice': advice, 'like': like})
     
     def post(self, request, slug):
-        ans = []
-        questions = Advice.objects.get(slug=slug).testquestion_set.all()
-        for question in questions:
-            ans.append(request.POST.get(f'question-{question.id}'))
-        print('ans', ans)
-        player_points = 0
-        max_points = sum([question.testanswer_set.get(is_truth=True).points for question in questions])
-        for answer_id in ans:
-            try:
-                answer = TestAnswer.objects.get(pk=int(answer_id))
-            except (ValueError, TypeError, TestAnswer.DoesNotExist):
-                continue
-            if answer.is_truth is True:
-                player_points += answer.points
-
-        user = request.user
-        user.score.score += player_points
-        user.save()
-        Advice.objects.get(slug=slug).passed.add(request.user.pk)
-        messages.success(request, f'Zdobyłaś/eś {player_points}, na {max_points} możliwych punktów')
-        return redirect(f'/advice/{slug}')
+        if "submit_quiz" in request.POST:
+            return check_quiz_answers(request, slug)
+        if "like" in request.POST:
+            return like_mechanism(request, slug, 1, True)
+        if "dislike" in request.POST:
+            return like_mechanism(request, slug, -1, False)
 
 
 class LoginView(View):

@@ -34,6 +34,16 @@
             </p>
             <p class="likes">
                 likes: {{ advice.likes }}
+                {% if not user.is_anonymous %}
+                <form method="post">
+                    {% csrf_token %}
+                    {% if not like.like %}
+                        <button type="submit" name="like">Like</button>
+                    {% else %}
+                        <button type="submit" name="dislike">Dislike</button>
+                    {% endif %}
+                </form>
+                {% endif %}
             </p>
         </div>
         <div class="quiz">
@@ -47,7 +57,7 @@
                 {% endfor %}
                 </ul>
             {% endfor %}
-                <input type="submit" value="Wyślij">
+                <input type="submit" name="submit_quiz" value="Wyślij">
             </form>
         </div>
     </div>
