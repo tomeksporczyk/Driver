@@ -6,7 +6,7 @@ from django.template.loader import render_to_string
 from driver.models import Advice, TestAnswer, Like
 
 
-def create_email_message(mail_subject, html_dir, user, variables_dict):
+def create_mail_to_user(mail_subject, html_dir, user, variables_dict):
     '''
 
     :param mail_subject: str - email subject, nothing more

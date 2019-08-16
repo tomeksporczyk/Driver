@@ -18,7 +18,7 @@ from django.views import View
 
 from driver.forms import LoginForm, RegistrationForm, EditUserForm
 from driver.models import Advice, TestAnswer, Like
-from driver.utils import create_email_message, check_quiz_answers, like_mechanism
+from driver.utils import create_mail_to_user, check_quiz_answers, like_mechanism
 
 
 class Home(View):
@@ -50,7 +50,6 @@ class Home(View):
 
 
 class AdviceView(View):
-    """todo: likes system."""
     def get(self, request, slug):
         try:
             advice = Advice.objects.get(slug=slug)
@@ -115,10 +114,10 @@ class RegisterView(View):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            email = create_email_message("Witamy na portalu Driver",
+            email = create_mail_to_user("Witamy na portalu Driver",
                                          "driver/welcome_email.html",
-                                         user,
-                                         {'user': user})
+                                        user,
+                                        {'user': user})
             email.send()
             return redirect(reverse_lazy('login'))
         else:
