@@ -1,0 +1,9 @@
+{% extends 'forum/../base.html' %}
+{% block content %}
+    <a href="{% url 'new_thread' pk=pk %}">Załóż nowy wątek</a>
+    <ul>
+    {% for thread in threads %}
+        <li>{{ thread }}</li>
+    {% endfor %}
+    </ul>
+{% endblock %}

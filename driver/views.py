@@ -17,7 +17,7 @@ from django.urls import reverse_lazy
 from django.views import View
 
 from driver.forms import LoginForm, RegistrationForm, EditUserForm
-from driver.models import Advice, TestAnswer, Like
+from driver.models import Advice, Like
 from driver.utils import create_mail_to_user, check_quiz_answers, like_mechanism
 
 
@@ -67,10 +67,12 @@ class AdviceView(View):
     def post(self, request, slug):
         if "submit_quiz" in request.POST:
             return check_quiz_answers(request, slug)
-        if "like" in request.POST:
+        elif "like" in request.POST:
             return like_mechanism(request, slug, 1, True)
-        if "dislike" in request.POST:
+        elif "dislike" in request.POST:
             return like_mechanism(request, slug, -1, False)
+        else:
+            return self.get(request, slug)
 
 
 class LoginView(View):
@@ -136,7 +138,7 @@ class EditProfileView(LoginRequiredMixin, View):
 
     def get(self, request):
         form = EditUserForm(instance=request.user).as_p()
-        return render(request, 'driver/uni_form.html', context={'form': form, 'submit': 'Zapisz'})
+        return render(request, 'driver/../uni_form.html', context={'form': form, 'submit': 'Zapisz'})
 
     def post(self, request):
         form = EditUserForm(request.POST, instance=request.user)
@@ -145,7 +147,7 @@ class EditProfileView(LoginRequiredMixin, View):
             return redirect(reverse_lazy('profile'))
         else:
             form = EditUserForm(instance=request.user).as_p()
-            return render(request, 'driver/uni_form.html', context={'form': form, 'submit': 'Zapisz'})
+            return render(request, 'driver/../uni_form.html', context={'form': form, 'submit': 'Zapisz'})
 
 
 class ChangePasswordView(LoginRequiredMixin, View):
@@ -154,7 +156,7 @@ class ChangePasswordView(LoginRequiredMixin, View):
 
     def get(self, request):
         form = PasswordChangeForm(user=request.user)
-        return render(request, 'driver/uni_form.html', context={'form': form, 'submit': 'Zapisz'})
+        return render(request, 'driver/../uni_form.html', context={'form': form, 'submit': 'Zapisz'})
 
     def post(self, request):
         form = PasswordChangeForm(data=request.POST, user=request.user)
@@ -165,4 +167,4 @@ class ChangePasswordView(LoginRequiredMixin, View):
         else:
             message = "Hasło niepoprawne"
             form = PasswordChangeForm(user=request.user)
-            return render(request, 'driver/uni_form.html', context={'form': form, 'submit': 'Zapisz', 'message': message})
+            return render(request, 'driver/../uni_form.html', context={'form': form, 'submit': 'Zapisz', 'message': message})

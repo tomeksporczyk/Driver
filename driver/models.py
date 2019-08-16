@@ -88,29 +88,6 @@ class TestAnswer(models.Model):
         return super().save(*args, **kwargs)
 
 
-class ForumTopic(models.Model):
-    name = models.CharField(max_length=512, unique=True)
-
-    def __str__(self):
-        return self.name
-
-
-class ForumThread(models.Model):
-    topic = models.ForeignKey(ForumTopic, on_delete=models.CASCADE)
-    title = models.CharField(max_length=256)
-    text = models.TextField()
-    created_date_time = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    thread_closed = models.BooleanField(default=False)
-
-
-class ForumAnswer(models.Model):
-    title = models.ForeignKey(ForumThread, on_delete=models.CASCADE)
-    text = models.TextField()
-    created_date_time = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-
-
 class Score(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     score = models.IntegerField(default=0)
