@@ -1,0 +1,39 @@
+{% extends 'forum/../base.html' %}
+{% block content %}
+    <h3>Tytuł: {{ thread }}</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>autor</th>
+                <th>tekst</th>
+                <th>data publikacji</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ thread.created_by }}</td>
+                <td>{{ thread.text }}</td>
+                <td>{{ thread.created_date_time }}</td>
+            </tr>
+            {% for answer in answers %}
+                <tr>
+                    <td>{{ answer.created_by }}</td>
+                    <td>{{ answer.text }}</td>
+                    <td>{{ answer.created_date_time }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if answers.has_previous %}
+        <a href="?page={{ answers.previous_page_number }}">Poprzednia strona</a>
+    {% endif %}
+    {% if answers.has_next %}
+        <a href="?page={{ answers.next_page_number }}">Następna strona </a>
+    {% endif %}
+    <h3>Odpowiedz</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Publikuj">
+    </form>
+{% endblock %}
