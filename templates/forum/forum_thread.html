@@ -30,10 +30,12 @@
     {% if answers.has_next %}
         <a href="?page={{ answers.next_page_number }}">Następna strona </a>
     {% endif %}
+    {% if not thread.thread_closed %}
     <h3>Odpowiedz</h3>
     <form method="post">
         {% csrf_token %}
         {{ form }}
         <input type="submit" value="Publikuj">
     </form>
+    {% endif %}
 {% endblock %}

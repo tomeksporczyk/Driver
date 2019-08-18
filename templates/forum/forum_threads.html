@@ -3,7 +3,11 @@
     <a href="{% url 'new_thread' pk=pk %}">Załóż nowy wątek</a>
     <ul>
     {% for thread in threads %}
-        <li><a href="{% url 'thread' t_pk=thread.pk %}">{{ thread }}</a></li>
+        <li><a href="{% url 'thread' t_pk=thread.pk %}">{{ thread }}</a>
+        {% if thread.thread_closed %}
+            <br>wątek zamknięty!
+        {% endif %}
+        </li>
     {% endfor %}
     </ul>
 {% endblock %}
