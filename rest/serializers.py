@@ -8,7 +8,7 @@ from rest_framework.relations import PrimaryKeyRelatedField
 from driver.models import TestQuestion, Advice, Tag, TestAnswer
 
 
-class AnswerSerializer(PrimaryKeyRelatedField, serializers.HyperlinkedModelSerializer):
+class AnswerSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = TestAnswer
@@ -23,25 +23,10 @@ class AdviceSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class QuestionSerializer(serializers.ModelSerializer):
-    answers = AnswerSerializer(many=True, queryset=TestAnswer.objects.all())
 
     class Meta:
         model = TestQuestion
-        fields = ['advice', 'question', 'answers']
-
-    def create(self, validated_data):
-        answers_data = validated_data.pop('answers')
-        question = TestQuestion.objects.create(**validated_data)
-        for answer_data in answers_data:
-            TestAnswer.objects.create(question=question, **answer_data)
-        return question
-
-# class QuestionAnswerSerializer(serializers.Serializer):
-#     question = QuestionSerializer(many=True)
-#     answer = AnswerSerializer(many=True)
-
-
-
+        fields = ['advice', 'question']
 
 
 class TagSerializer(serializers.ModelSerializer):
