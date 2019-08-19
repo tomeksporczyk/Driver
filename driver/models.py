@@ -77,7 +77,7 @@ class TestQuestion(models.Model):
 
 
 class TestAnswer(models.Model):
-    question = models.ForeignKey(TestQuestion, on_delete=models.CASCADE)
+    question = models.ForeignKey(TestQuestion, related_name='answers', on_delete=models.CASCADE)
     answer = models.CharField(max_length=512)
     is_truth = models.BooleanField(default=False)
     points = models.IntegerField(default=0)
@@ -87,6 +87,8 @@ class TestAnswer(models.Model):
             self.points = 1
         return super().save(*args, **kwargs)
 
+    def __str__(self):
+        return self.answer
 
 class Score(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
