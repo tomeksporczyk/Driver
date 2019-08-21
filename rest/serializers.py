@@ -1,9 +1,10 @@
-'''
-todo: REST API
-'''
+
+"""
+todo: forum api, quiz api with posting both q and a
+"""
+
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from rest_framework.relations import PrimaryKeyRelatedField
 
 from driver.models import TestQuestion, Advice, Tag, TestAnswer
 
@@ -41,3 +42,4 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = ['url', 'first_name', 'last_name', 'is_staff', 'is_active', 'email']
+

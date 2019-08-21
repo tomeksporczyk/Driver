@@ -90,6 +90,7 @@ class TestAnswer(models.Model):
     def __str__(self):
         return self.answer
 
+
 class Score(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     score = models.IntegerField(default=0)
