@@ -7,19 +7,25 @@ from driver.models import Advice, TestAnswer, Like
 
 
 def create_mail_to_user(mail_subject, html_dir, user, variables_dict):
-    '''
-
+    """
     :param mail_subject: str - email subject, nothing more
     :param html_dir: str - html template's dir
     :param user: user instance - for email address
     :param variables_dict: dictionary - variables used in the html template
-    :return:
-    '''
+    :return: Email object with mail subject, message=html_dir+variables, to user
+    """
     message = render_to_string(html_dir, variables_dict)
     return EmailMessage(mail_subject, message, to=[user.email])
 
 
 def check_quiz_answers(request, slug):
+    """
+
+    :param request: request
+    :param slug: advice's slug
+    :return: checks answers, gives points, redirects advice/slug
+    todo: change redirection
+    """
     ans = []
     questions = Advice.objects.get(slug=slug).testquestion_set.all()
     for question in questions:

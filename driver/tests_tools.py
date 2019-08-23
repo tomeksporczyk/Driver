@@ -1,5 +1,6 @@
 import unittest.mock
 
+from django.contrib.auth.models import User
 from django.core.files import File
 from django.core.files.uploadedfile import SimpleUploadedFile
 
@@ -27,6 +28,7 @@ def create_image(file_name, dir):
 
 def create_weeks_advice(file_name, dir, tag_name):
     """
+    todo: create one create_advice function for all advice types
     :param file_name: string - name of media file to upload
     :param dir: string - directory of the file
     :param tag_name: string - name of the tag to be created
@@ -84,3 +86,7 @@ def create_passed_advice(user, file_name, dir, tag_name):
     advice.save()
     advice.tags.add(tag)
     return advice
+
+
+def create_user():
+    return User.objects.create_user(username='testuser', email='test@user.com', password='test')
