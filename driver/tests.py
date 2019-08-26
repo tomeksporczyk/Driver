@@ -51,12 +51,12 @@ class HomeAdvicelessTestCase(TestCase):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 404)
 
-        
+
 class HomeTestCase(TestCase):
 
     def setUp(self):
         self.image = create_image('test_image.jpg',
-                     '/home/tomek/PycharmProjects/Driver/media/advice/harold.jpg')
+                                  '/home/tomek/PycharmProjects/Driver/media/advice/harold.jpg')
         self.user = create_user()
         self.weeks = create_advice('weeks', self.image)
         self.normal = create_advice('normal', self.image)
@@ -70,7 +70,7 @@ class HomeTestCase(TestCase):
     def test_home_status(self):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
-
+        
 
 if __name__ == "__main__":
     unittest.main()
