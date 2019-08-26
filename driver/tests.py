@@ -3,6 +3,7 @@ import unittest.mock
 
 from django.contrib import auth
 from django.contrib.auth.models import User
+from django.http import Http404
 from django.test import TestCase, Client
 
 # Create your tests here.
@@ -46,6 +47,18 @@ class ToolsTestCase(TestCase):
         advice = Advice.objects.get(passed__username=user.username)
         self.assertEqual(advice.title, "Passed advice")
 
+
+class HomeTestCase(TestCase):
+
+    def test_empty_advice_table_status_handling(self):
+        """
+        :return: response 404 if no Advice objects were created
+        """
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 404)
+
+    def setUp(self):
+        create_image()
 
 if __name__ == "__main__":
     unittest.main()

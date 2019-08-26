@@ -1,15 +1,14 @@
 import datetime
 
-import magic
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import AnonymousUser, User
+from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.paginator import Paginator
-from django.http import Http404, HttpResponse
+from django.http import Http404
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -23,9 +22,14 @@ from driver.utils import create_mail_to_user, check_quiz_answers, like_mechanism
 
 class Home(View):
     def get(self, request):
-        weeks_advice = Advice.objects.filter(weeks_advice=True).latest(field_name="created_date")
-        if not weeks_advice:
-            weeks_advice = Advice.objects.latest(field_name="created_date")
+        weeks_advice = Advice.objects.filter(weeks_advice=True)
+        if weeks_advice.count():
+            weeks_advice = weeks_advice.latest(field_name="created_date")
+        else:
+            try:
+                weeks_advice = Advice.objects.latest(field_name="created_date")
+            except Advice.DoesNotExist:
+                raise Http404
         if request.user.is_anonymous:
             advices_not_passed_list = Advice.objects.exclude(pk=weeks_advice.pk)
         else:
