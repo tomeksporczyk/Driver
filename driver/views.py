@@ -31,7 +31,7 @@ class Home(View):
             except Advice.DoesNotExist:
                 raise Http404
         if request.user.is_anonymous:
-            advices_not_passed_list = Advice.objects.exclude(pk=weeks_advice.pk)
+            advices_not_passed_list = Advice.objects.exclude(pk=weeks_advice.pk).order_by('-created_date')
         else:
             advices_not_passed_list = Advice.objects.exclude(pk=weeks_advice.pk).order_by('-passed')
         paginator = Paginator(advices_not_passed_list, 3)

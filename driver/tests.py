@@ -9,6 +9,8 @@ from django.http import Http404
 from django.test import TestCase, Client
 
 # Create your tests here.
+from django.urls import reverse
+
 from driver.models import Advice
 from driver.tests_tools import create_image, create_advice, create_user
 
@@ -70,7 +72,24 @@ class HomeTestCase(TestCase):
     def test_home_status(self):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
-        
+
+    def test_home_displays_weeks_advice(self):
+        response = self.client.get(reverse('home'))
+        self.assertContains(response, "Week&#39;s advice")
+
+    def test_home_displays_normal_advice(self):
+        response = self.client.get(reverse('home'))
+        self.assertContains(response, "Normal advice")
+
+    def test_home_displays_passed_advice(self):
+        response = self.client.get(reverse('home'))
+        self.assertContains(response, "Passed advice")
+
+    def test_home_advice_ordering(self):
+        response = self.client.get(reverse('home'))
+        query_set = Advice.objects.exclude(weeks_advice=True).order_by('-created_date')
+        self.assertQuerysetEqual(response.context['advices_not_passed'], [repr(_) for _ in query_set])
+
 
 if __name__ == "__main__":
     unittest.main()
